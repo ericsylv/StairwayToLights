@@ -26,7 +26,7 @@ namespace StairwayToLights
   {
     private const int PIR_TOP_PIN_NUMBER = 23;
     private const int PIR_BOTTOM_PIN_NUMBER = 24;
-    private readonly List<int> STAIRS_PIN_NUMBERS = new List<int>() { 2, 3, 4, 17, 27, 22, 10, 9, 11, 5, 6, 13, 19 };
+    private readonly List<int> STAIRS_PIN_NUMBERS = new List<int>() { 4, 5, 6, 17, 13, 19, 26, 22, 16, 20, 21, 18, 25 };
 
     public MainPage()
     {

@@ -24,6 +24,7 @@ namespace StairwayToLights.ViewModels
             => await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, handler);
 
     //IoT
+    private bool _isIotConnected;
     private int _pirTopPinNumber;
     private int _pirBottomPinNumber;
     private GpioPin _pirTopPin;
@@ -37,8 +38,8 @@ namespace StairwayToLights.ViewModels
       IsPirBottomOn = false;
       IsSomeoneInStairway = false;
       Status = "Waiting for input...";
-      DelayBetweenEachStair = 1000;
-      DelayBeforeTurningOffLights = 3000;
+      DelayBetweenEachStair = 300;
+      DelayBeforeTurningOffLights = 5000;
 
       Logs = new ObservableCollection<string>()
       {
@@ -48,10 +49,15 @@ namespace StairwayToLights.ViewModels
       Stairs = new ObservableCollection<StairViewModel>();
 
       //Iot
+      _isIotConnected = false;
       _pirTopPinNumber = pirTopPinNumber;
       _pirBottomPinNumber = pirBottomPinNumber;
       _orderedPinsForStairs = orderedPinsForStairs;
-      //InitGpio();
+
+      if (_isIotConnected)
+      {
+        InitGpio();
+      }
     }
 
     public double DelayBetweenEachStair
@@ -120,7 +126,7 @@ namespace StairwayToLights.ViewModels
 
       for (int i = 0; i < numberOfStairs; i++)
       {
-        Stairs.Add(new StairViewModel(i + 1, _orderedPinsForStairs.First()));
+        Stairs.Add(new StairViewModel(i + 1, _orderedPinsForStairs.First(), _isIotConnected));
         _orderedPinsForStairs.RemoveAt(0);
         Logs.Insert(0, string.Format("[{0}]: {1}", DateTime.Now.ToString(), string.Concat("Just added stair #", Stairs.Last().ID.ToString())));
       }
@@ -166,6 +172,7 @@ namespace StairwayToLights.ViewModels
         IsPirBottomOn = true;
         IsSomeoneInStairway = true;
         Status = "Motion detected on BOTTOM of stairway.";
+        Logs.Insert(0, string.Format("[{0}]: {1}", DateTime.Now.ToString(), "Motion detected at BOTTOM of stairway."));
 
         Task.Run(() =>
         {
@@ -192,19 +199,22 @@ namespace StairwayToLights.ViewModels
 
     public void Dispose()
     {
-      if (Stairs.Any())
+      if (_isIotConnected)
       {
-        Stairs.ToList().ForEach(x => x.Dispose());
-      }
+        if (Stairs.Any())
+        {
+          Stairs.ToList().ForEach(x => x.Dispose());
+        }
 
-      if (_pirTopPin != null)
-      {
-        _pirTopPin.ValueChanged -= SomeoneDetectedOnTop;
-      }
+        if (_pirTopPin != null)
+        {
+          _pirTopPin.ValueChanged -= SomeoneDetectedOnTop;
+        }
 
-      if (_pirBottomPin != null)
-      {
-        _pirBottomPin.ValueChanged -= SomeoneDetectedAtBottom;
+        if (_pirBottomPin != null)
+        {
+          _pirBottomPin.ValueChanged -= SomeoneDetectedAtBottom;
+        } 
       }
     }
 

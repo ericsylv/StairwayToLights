@@ -14,16 +14,21 @@ namespace StairwayToLights.ViewModels
 {
   public class StairViewModel : BindableBase, IDisposable
   {
+    private bool _isIotConnected;
     private bool _isLightOn;
     private GpioPin _pin;
 
-    public StairViewModel(int id, int pinNumber)
+    public StairViewModel(int id, int pinNumber, bool isIotConnected)
     {
+      _isIotConnected = isIotConnected;
       ID = id;
       PinNumber = pinNumber;
       IsLightOn = false;
 
-      //InitGpio();
+      if (_isIotConnected)
+      {
+        InitLedsGpio();
+      }
     }
 
     public int ID { get; private set; }
@@ -41,27 +46,38 @@ namespace StairwayToLights.ViewModels
     public void TurnOnLight()
     {
       IsLightOn = true;
-      //_pin.Write(GpioPinValue.Low);
+      if (_isIotConnected)
+      {
+        _pin.Write(GpioPinValue.High);
+      }
+
       Debug.WriteLine(string.Format("Stair #{0} light is ON ({1})", ID, DateTime.Now.ToString()));
     }
 
     public void TurnOffLight()
     {
       IsLightOn = false;
-      //_pin.Write(GpioPinValue.High);
+      if (_isIotConnected)
+      {
+        _pin.Write(GpioPinValue.Low);
+      }
+
       Debug.WriteLine(string.Format("Stair #{0} light is OFF ({1})", ID, DateTime.Now.ToString()));
     }
 
     public void Dispose()
     {
-      //_pin.Dispose();
+      if (_isIotConnected)
+      {
+        _pin.Dispose();
+      }
     }
-    private void InitGpio()
+    private void InitLedsGpio()
     {
       var controller = GpioController.GetDefault();
       _pin = controller.OpenPin(PinNumber);
       _pin.SetDriveMode(GpioPinDriveMode.Output);
-      _pin.Write(GpioPinValue.High);
+      _pin.Write(GpioPinValue.Low);
     }
   }
 }

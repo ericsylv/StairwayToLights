@@ -3,3 +3,6 @@
 ################################################################################
 
 /StairwayToLights/obj/ARM/Debug
+/StairwayToLights/bin
+/StairwayToLights/obj/x86/Debug
+/.vs/StairwayToLights/v14/.suo

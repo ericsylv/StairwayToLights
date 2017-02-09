@@ -18,7 +18,7 @@
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="Auto" />
       <ColumnDefinition Width="Auto" />
-      <ColumnDefinition Width="400" />
+      <ColumnDefinition Width="*" />
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
       <RowDefinition Height="Auto" />
@@ -33,7 +33,7 @@
     <!-- PIR Top -->
     <Button x:Name="btnPirTop" Grid.Column="0" Grid.Row="1" Click="btnPirTop_Click">
       <Button.Content>
-        <Ellipse x:Name="cirPirTop" Fill="{x:Bind ViewModel.IsPirTopOn, Converter={StaticResource PirConverter}, Mode=OneWay}" Height="50" Width="50" />
+        <Ellipse x:Name="cirPirTop"  Height="50" Width="50" Fill="{x:Bind ViewModel.IsPirTopOn, Converter={StaticResource PirConverter}, Mode=OneWay}" />
       </Button.Content>
     </Button>
 
@@ -43,8 +43,12 @@
       <ListView ItemsSource="{x:Bind ViewModel.Stairs, Mode=OneWay}" HorizontalAlignment="Center" VerticalAlignment="Center">
         <ListView.ItemTemplate>
           <DataTemplate x:DataType="vm:StairViewModel">
-            <Border BorderBrush="Black" BorderThickness="4" Background="{x:Bind IsLightOn, Converter={StaticResource StairConverter}, Mode=OneWay}" Width="500" Height="30">
-              <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{x:Bind ID}" FontSize="16" FontWeight="Bold" />
+            <Border BorderBrush="Black" BorderThickness="4"  Width="500" Height="30" Background ="{x:Bind IsLightOn, Converter={StaticResource StairConverter}, Mode=OneWay}">
+              <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                <TextBlock  VerticalAlignment="Center" Text="{x:Bind ID}" FontSize="16" FontWeight="Bold" />
+                <TextBlock  VerticalAlignment="Center" Text=" - GPIO #:" FontSize="16" FontWeight="Bold" />
+                <TextBlock HorizontalAlignment="Center" VerticalAlignment="Center" Text="{x:Bind PinNumber}" FontSize="16" FontWeight="Bold" />
+              </StackPanel>
             </Border>
           </DataTemplate>
         </ListView.ItemTemplate>
@@ -54,7 +58,7 @@
     <!-- PIR Bottom -->
     <Button x:Name="btnPirBottom" Grid.Column="0" Grid.Row="3" Click="btnPirBottom_Click" >
       <Button.Content>
-        <Ellipse x:Name="cirPirBottom" Fill="{x:Bind ViewModel.IsPirBottomOn, Converter={StaticResource PirConverter}, Mode=OneWay}" Height="50" Width="50" />
+        <Ellipse x:Name="cirPirBottom" Height="50" Width="50" Fill ="{x:Bind ViewModel.IsPirBottomOn, Converter={StaticResource PirConverter}, Mode=OneWay}" />
       </Button.Content>
     </Button>
 

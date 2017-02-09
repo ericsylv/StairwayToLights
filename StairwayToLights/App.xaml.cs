@@ -78,25 +78,11 @@ namespace StairwayToLights
         // parameter
         rootFrame.Navigate(typeof(MainPage), e.Arguments);
       }
+
+      ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.FullScreen;
+
       // Ensure the current window is active
       Window.Current.Activate();
-
-      // To make full screen mode
-      //var view = ApplicationView.GetForCurrentView();
-      //if (view.IsFullScreenMode)
-      //{
-      //  view.ExitFullScreenMode();
-      //  ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.Auto;
-      //  // The SizeChanged event will be raised when the exit from full-screen mode is complete.
-      //}
-      //else
-      //{
-      //  if (view.TryEnterFullScreenMode())
-      //  {
-      //    ApplicationView.PreferredLaunchWindowingMode = ApplicationViewWindowingMode.FullScreen;
-      //    // The SizeChanged event will be raised when the entry to full-screen mode is complete.
-      //  }
-      //}
     }
 
     /// <summary>
