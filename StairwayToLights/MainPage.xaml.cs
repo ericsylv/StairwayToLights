@@ -26,8 +26,13 @@ namespace StairwayToLights
   {
     private const int PIR_TOP_PIN_NUMBER = 23;
     private const int PIR_BOTTOM_PIN_NUMBER = 24;
+
+    // List of PINs available on the Raspberry Pi 2. Not full list.
     private readonly List<int> STAIRS_PIN_NUMBERS = new List<int>() { 4, 5, 6, 17, 13, 19, 26, 22, 16, 20, 21, 18, 25 };
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="MainPage"/> class.
+    /// </summary>
     public MainPage()
     {
       ViewModel = new StairwayViewModel(PIR_TOP_PIN_NUMBER, PIR_BOTTOM_PIN_NUMBER, STAIRS_PIN_NUMBERS);
@@ -37,14 +42,12 @@ namespace StairwayToLights
       this.InitializeComponent();
     }
 
-    private void MainPage_Unloaded(object sender, RoutedEventArgs e)
-    {
-      if (ViewModel != null)
-      {
-        ViewModel.Dispose();
-      }
-    }
-
+    /// <summary>
+    /// Gets or sets the view model.
+    /// </summary>
+    /// <value>
+    /// The view model.
+    /// </value>
     public StairwayViewModel ViewModel { get; set; }
 
     private void btnPirTop_Click(object sender, RoutedEventArgs e)
@@ -60,6 +63,14 @@ namespace StairwayToLights
       if (!ViewModel.IsSomeoneInStairway)
       {
         ViewModel.GoUp();
+      }
+    }
+
+    private void MainPage_Unloaded(object sender, RoutedEventArgs e)
+    {
+      if (ViewModel != null)
+      {
+        ViewModel.Dispose();
       }
     }
   }

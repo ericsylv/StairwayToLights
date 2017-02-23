@@ -11,6 +11,11 @@ using Windows.UI.Core;
 
 namespace StairwayToLights.ViewModels
 {
+  /// <summary>
+  /// ViewModel representing the stairway
+  /// </summary>
+  /// <seealso cref="StairwayToLights.Common.BindableBase" />
+  /// <seealso cref="System.IDisposable" />
   public class StairwayViewModel : BindableBase, IDisposable
   {
     private bool _isPirTopOn;
@@ -23,7 +28,7 @@ namespace StairwayToLights.ViewModels
     private static Func<DispatchedHandler, Task> _callOnUiThread = async (handler)
             => await CoreApplication.MainView.CoreWindow.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, handler);
 
-    //IoT
+    //IoT fields
     private bool _isIotConnected;
     private int _pirTopPinNumber;
     private int _pirBottomPinNumber;
@@ -31,6 +36,12 @@ namespace StairwayToLights.ViewModels
     private GpioPin _pirBottomPin;
     private List<int> _orderedPinsForStairs;
 
+    /// <summary>
+    /// Initializes a new instance of the <see cref="StairwayViewModel"/> class.
+    /// </summary>
+    /// <param name="pirTopPinNumber">The pir top pin number.</param>
+    /// <param name="pirBottomPinNumber">The pir bottom pin number.</param>
+    /// <param name="orderedPinsForStairs">The ordered pins for stairs.</param>
     public StairwayViewModel(int pirTopPinNumber, int pirBottomPinNumber, List<int> orderedPinsForStairs)
     {
       // Initialization      
@@ -48,7 +59,7 @@ namespace StairwayToLights.ViewModels
       };
       Stairs = new ObservableCollection<StairViewModel>();
 
-      //Iot
+      //Iot related
       _isIotConnected = false;
       _pirTopPinNumber = pirTopPinNumber;
       _pirBottomPinNumber = pirBottomPinNumber;
@@ -60,6 +71,12 @@ namespace StairwayToLights.ViewModels
       }
     }
 
+    /// <summary>
+    /// Gets or sets the delay between each stair.
+    /// </summary>
+    /// <value>
+    /// The delay between each stair. Default value is set in constructor.
+    /// </value>
     public double DelayBetweenEachStair
     {
       get { return _delayBetweenEachStair; }
@@ -69,6 +86,12 @@ namespace StairwayToLights.ViewModels
       }
     }
 
+    /// <summary>
+    /// Gets or sets the delay before turning off lights.
+    /// </summary>
+    /// <value>
+    /// The delay between each stair. Default value is set in constructor.
+    /// </value>
     public double DelayBeforeTurningOffLights
     {
       get { return _delayBeforeTurningOffLights; }
@@ -78,6 +101,12 @@ namespace StairwayToLights.ViewModels
       }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the top PIR is on.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if this instance is pir top on; otherwise, <c>false</c>.
+    /// </value>
     public bool IsPirTopOn
     {
       get { return _isPirTopOn; }
@@ -87,6 +116,12 @@ namespace StairwayToLights.ViewModels
       }
     }
 
+    /// <summary>
+    /// Gets or sets a value indicating whether the bottom PIR is on.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if this instance is pir bottom on; otherwise, <c>false</c>.
+    /// </value>
     public bool IsPirBottomOn
     {
       get { return _isPirBottomOn; }
@@ -95,6 +130,12 @@ namespace StairwayToLights.ViewModels
         SetProperty(ref _isPirBottomOn, value);
       }
     }
+    /// <summary>
+    /// Gets or sets the status of what's going on.
+    /// </summary>
+    /// <value>
+    /// The status.
+    /// </value>
     public string Status
     {
       get { return _status; }
@@ -105,6 +146,12 @@ namespace StairwayToLights.ViewModels
     }
 
 
+    /// <summary>
+    /// Gets or sets a value indicating whether there is someone in stairway.
+    /// </summary>
+    /// <value>
+    /// <c>true</c> if there is someone in stairway; otherwise, <c>false</c>.
+    /// </value>
     public bool IsSomeoneInStairway
     {
       get { return _isSomeoneInStairway; }
@@ -114,9 +161,27 @@ namespace StairwayToLights.ViewModels
       }
     }
 
+    /// <summary>
+    /// Gets or sets the logs of the app.
+    /// </summary>
+    /// <value>
+    /// The logs.
+    /// </value>
     public ObservableCollection<string> Logs { get; set; }
+
+    /// <summary>
+    /// Gets or sets the stairs.
+    /// </summary>
+    /// <value>
+    /// The stairs.
+    /// </value>
     public ObservableCollection<StairViewModel> Stairs { get; set; }
 
+    /// <summary>
+    /// Creates a number of stairs in the stairway.
+    /// </summary>
+    /// <param name="numberOfStairs">The number of stairs.</param>
+    /// <exception cref="Exception">Impossible to create stairs, not enough available pins</exception>
     public void CreateStairs(int numberOfStairs)
     {
       if (numberOfStairs > _orderedPinsForStairs.Count)
@@ -131,6 +196,9 @@ namespace StairwayToLights.ViewModels
         Logs.Insert(0, string.Format("[{0}]: {1}", DateTime.Now.ToString(), string.Concat("Just added stair #", Stairs.Last().ID.ToString())));
       }
     }
+    /// <summary>
+    /// Someone is going down.
+    /// </summary>
     public void GoDown()
     {
       if (Stairs.Any() && !IsSomeoneInStairway)
@@ -141,6 +209,7 @@ namespace StairwayToLights.ViewModels
         Status = "Motion detected on TOP of stairway.";
         Logs.Insert(0, string.Format("[{0}]: {1}", DateTime.Now.ToString(), "Motion detected on TOP of stairway."));
 
+        // Start to turn on stairs
         Task.Run(() =>
         {
           foreach (StairViewModel stair in Stairs)
@@ -164,6 +233,9 @@ namespace StairwayToLights.ViewModels
       }
     }
 
+    /// <summary>
+    /// Someone is going up.
+    /// </summary>
     public void GoUp()
     {
       if (Stairs.Any() && !IsSomeoneInStairway)
@@ -174,6 +246,7 @@ namespace StairwayToLights.ViewModels
         Status = "Motion detected on BOTTOM of stairway.";
         Logs.Insert(0, string.Format("[{0}]: {1}", DateTime.Now.ToString(), "Motion detected at BOTTOM of stairway."));
 
+        // Start to turn on stairs
         Task.Run(() =>
         {
           foreach (StairViewModel stair in Stairs.Reverse())
@@ -197,6 +270,9 @@ namespace StairwayToLights.ViewModels
       }
     }
 
+    /// <summary>
+    /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+    /// </summary>
     public void Dispose()
     {
       if (_isIotConnected)

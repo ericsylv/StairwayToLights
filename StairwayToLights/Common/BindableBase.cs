@@ -6,7 +6,7 @@ namespace StairwayToLights.Common
 {
   /// <summary>
   /// Implementation of <see cref="INotifyPropertyChanged"/> to simplify models.
-  /// https://github.com/Microsoft/Windows-appsample-networkhelper/blob/master/DemoApps/QuizGame/Common/BindableBase.cs
+  /// Credits to: https://github.com/Microsoft/Windows-appsample-networkhelper/blob/master/DemoApps/QuizGame/Common/BindableBase.cs
   /// </summary>
   [Windows.Foundation.Metadata.WebHostHidden]
   public abstract class BindableBase : INotifyPropertyChanged
