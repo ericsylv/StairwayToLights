@@ -6,3 +6,13 @@
 /StairwayToLights/bin
 /StairwayToLights/obj/x86/Debug
 /.vs/StairwayToLights/v14/.suo
+
+# Environnement virtuel
+.venv/
+
+# Fichiers de cache Python
+__pycache__/
+*.pyc
+
+# Fichiers de configuration VS Code
+.vscode/
